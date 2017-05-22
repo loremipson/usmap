@@ -55,7 +55,7 @@ export default (element, options) => {
     if (attr.groups) {
       for (const obj in attr.groups) {
         const group = attr.groups[obj];
-        if (group.states.includes(mapData[state].text)) {
+        if (group.states.includes(mapData[state].abbr.text)) {
           set.items[0].attr({ fill: group.fill });
         }
       }
@@ -69,7 +69,7 @@ export default (element, options) => {
         if (attr.groups) {
           for (const obj in attr.groups) {
             const group = attr.groups[obj];
-            if (group.states.includes(mapData[state].text)) {
+            if (group.states.includes(mapData[state].abbr.text)) {
               fillColor = group.fill;
             }
           }
