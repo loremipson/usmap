@@ -1,8 +1,6 @@
 import Raphael from 'raphael';
 import mapData from './mapData';
 
-// TODO: Figure out an approach to link/click handling. All sites could have a different link "template"..
-
 export default (element, options) => {
   const config = Object.assign({
     'fill': '#d3d3d3',
@@ -15,6 +13,11 @@ export default (element, options) => {
     'stroke-dasharray': 'none',
     'animate-in': 0,
     'animate-out': 200,
+    'label': {
+      'fill': '#fff',
+      'font-weight': 'bold',
+      'font-size': '14',
+    },
   }, options);
 
   const R = Raphael(element); // eslint-disable-line
@@ -22,6 +25,21 @@ export default (element, options) => {
 
   R.setViewBox(0, 0, 960, 600, true);
   R.setSize('100%', '100%');
+
+  const handleClick = (url, state) => {
+    console.log(url);
+    console.log(state);
+    if (url.includes('{name}')) {
+      const friendlyState = state.name.replace(' ', '-').toLowerCase();
+      url = url.replace('{name}', friendlyState);
+    }
+
+    if (url.includes('{abbr}')) {
+      url = url.replace('{abbr}', state.abbr.text.toLowerCase());
+    }
+
+    window.location = url;
+  };
 
   for (const state in mapData) {
 
@@ -37,19 +55,23 @@ export default (element, options) => {
     set.push(shape.attr(attr));
 
     if (attr.labels) {
-      // TODO: Make test attr() object configurable.
-      const label = R.text(mapData[state].abbr.posX, mapData[state].abbr.posY, mapData[state].abbr.text).attr({
-        'font-weight': 'bold',
-        'font-size': '14',
-        'fill': '#fff',
-      });
+      const label = R.text(mapData[state].abbr.posX, mapData[state].abbr.posY, mapData[state].abbr.text)
+        .attr(attr.label);
 
       set.push(label);
     }
 
-    set.attr({
-      'cursor': 'pointer',
-    });
+    if (attr['link-template']) {
+      set.attr({
+        'cursor': 'pointer',
+      });
+    }
+
+    if (attr.hasOwnProperty('link-template')) {
+      set.click(() => {
+        handleClick(attr['link-template'], mapData[state]);
+      });
+    }
 
     // TODO: Let groups have hover fill options
     if (attr.groups) {
@@ -57,6 +79,12 @@ export default (element, options) => {
         const group = attr.groups[obj];
         if (group.states.includes(mapData[state].abbr.text)) {
           set.items[0].attr({ fill: group.fill });
+
+          if (group['link-template']) {
+            set.click(() => {
+              handleClick(group['link-template'], mapData[state]);
+            });
+          }
         }
       }
     }
