@@ -5,13 +5,7 @@ import assign from 'object-assign-deep';
 export default (element, options) => {
   const config = assign({
     'fill': '#d3d3d3',
-    'active-fill': '#666',
     'stroke': '#fff',
-    'stroke-opacity': 1,
-    'stroke-linejoin': 'round',
-    'stroke-miterlimit': 4,
-    'stroke-width': 1,
-    'stroke-dasharray': 'none',
     'animate-in': 0,
     'animate-out': 200,
     'label': {
