@@ -75,9 +75,7 @@ export default (element, options) => {
     }
 
     if (attr['link-template']) {
-      set.attr({
-        'cursor': 'pointer',
-      });
+      set.attr({ 'cursor': 'pointer' });
     }
 
     if (attr.hasOwnProperty('link-template')) {
@@ -97,6 +95,7 @@ export default (element, options) => {
           set.items[0].attr({ fill: group.fill });
 
           if (group['link-template']) {
+            set.attr({ 'cursor': 'pointer' });
             set.click(() => {
               handleClick(group['link-template'], mapData[state]);
             });
