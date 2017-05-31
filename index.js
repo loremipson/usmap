@@ -1,8 +1,9 @@
 import Raphael from 'raphael';
 import mapData from './mapData';
+import assign from 'object-assign-deep';
 
 export default (element, options) => {
-  const config = Object.assign({
+  const config = assign({
     'fill': '#d3d3d3',
     'active-fill': '#666',
     'stroke': '#fff',
@@ -27,8 +28,6 @@ export default (element, options) => {
   R.setSize('100%', '100%');
 
   const handleClick = (url, state) => {
-    console.log(url);
-    console.log(state);
     if (url.includes('{name}')) {
       const friendlyState = state.name.replace(' ', '-').toLowerCase();
       url = url.replace('{name}', friendlyState);
@@ -39,6 +38,20 @@ export default (element, options) => {
     }
 
     window.location = url;
+  };
+
+  const handleHover = (set, conf) => {
+    set.hover(() => {
+      if (conf.label && conf.label['hover-fill']) {
+        set.items[1].stop().animate({ fill: conf.label['hover-fill'] }, conf['animate-in']);
+      }
+      set.items[0].stop().animate({ fill: conf['hover-fill'] }, conf['animate-in']);
+    }, () => {
+      if (conf.label && conf.label['hover-fill']) {
+        set.items[1].stop().animate({ fill: conf.label.fill }, conf['animate-in']);
+      }
+      set.items[0].stop().animate({ fill: conf.fill }, conf['animate-out']);
+    });
   };
 
   for (const state in mapData) {
@@ -73,7 +86,10 @@ export default (element, options) => {
       });
     }
 
-    // TODO: Let groups have hover fill options
+    if (attr.hasOwnProperty('hover-fill')) {
+      handleHover(set, attr);
+    }
+
     if (attr.groups) {
       for (const obj in attr.groups) {
         const group = attr.groups[obj];
@@ -85,25 +101,12 @@ export default (element, options) => {
               handleClick(group['link-template'], mapData[state]);
             });
           }
-        }
-      }
-    }
 
-    if (attr.hasOwnProperty('hover-fill')) {
-      set.hover(() => {
-        set.items[0].stop().animate({ fill: attr['hover-fill'] }, attr['animate-in']);
-      }, () => {
-        let fillColor = attr.fill;
-        if (attr.groups) {
-          for (const obj in attr.groups) {
-            const group = attr.groups[obj];
-            if (group.states.includes(mapData[state].abbr.text)) {
-              fillColor = group.fill;
-            }
+          if (group['hover-fill']) {
+            handleHover(set, group);
           }
         }
-        set.items[0].stop().animate({ fill: fillColor }, attr['animate-out']);
-      });
+      }
     }
   }
 };

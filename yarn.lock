@@ -509,6 +509,10 @@ ms@2.0.0:
   version "2.0.0"
   resolved "https://npm.clearlink.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
+object-assign-deep@^0.3.1:
+  version "0.3.1"
+  resolved "https://npm.clearlink.com/object-assign-deep/-/object-assign-deep-0.3.1.tgz#b57b7572d9a328d6448a3f4b6c0fffc8b10c61a2"
+
 private@^0.1.6:
   version "0.1.7"
   resolved "https://npm.clearlink.com/private/-/private-0.1.7.tgz#68ce5e8a1ef0a23bb570cc28537b5332aba63ef1"
