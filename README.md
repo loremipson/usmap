@@ -2,6 +2,10 @@
 
 An interactive US state map that's simple to use.
 
+```shell
+yarn add usmap
+```
+
 ```javascript
 import map from 'usmap';
 
