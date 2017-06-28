@@ -101,3 +101,30 @@ Groups _require_ an array of States (capitalized abbreviations). Some examples:
   },
 }
 ```
+
+## Known Issues
+
+### IE11 Scaling Issue
+
+IE11 does not scale the map. This can be resolved with stylesheets using positioning on both the parent map element and the svg that gets generated.
+
+Example using SCSS:
+
+```scss
+@media screen and (-ms-high-contrast: none) { // Targets IE11 and not Edge
+  .your-element {
+    position: relative;
+    height: 45vw; // You may need to mess with this value a bit.
+
+    svg {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }  
+}
+```
+
+It's ugly, but the `45vw` seems to scale it close enough to the default behavior of the map.
