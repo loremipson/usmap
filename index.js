@@ -18,16 +18,16 @@ export default (element, options) => {
   const R = Raphael(element); // eslint-disable-line
   const attr = config;
 
-  R.setViewBox(0, 0, 960, 600, true);
+  R.setViewBox(0, 0, 927, 590, true);
   R.setSize('100%', '100%');
 
   const handleClick = (url, state) => {
-    if (url.includes('{name}')) {
+    if (url.indexOf('{name}') > -1) {
       const friendlyState = state.name.replace(' ', '-').toLowerCase();
       url = url.replace('{name}', friendlyState);
     }
 
-    if (url.includes('{abbr}')) {
+    if (url.indexOf('{abbr}') > -1) {
       url = url.replace('{abbr}', state.abbr.text.toLowerCase());
     }
 
@@ -85,7 +85,7 @@ export default (element, options) => {
     if (attr.groups) {
       for (const obj in attr.groups) {
         const group = attr.groups[obj];
-        if (group.states.includes(mapData[state].abbr.text)) {
+        if (group.states.indexOf(mapData[state].abbr.text) > -1) {
           set.items[0].attr({ fill: group.fill });
 
           if (group['link-template']) {
