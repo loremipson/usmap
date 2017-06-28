@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "author": "Tyler Ipson",
+  "email": "tyler.ipson@gmail.com",
   "dependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-3": "^6.24.1",
