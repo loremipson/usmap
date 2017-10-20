@@ -1,6 +1,5 @@
 import { h, render, Component } from 'preact';
 import throttle from 'lodash/throttle';
-import USState from './components/USState';
 import mapData from './mapData';
 import assign from 'object-assign-deep';
 
@@ -16,10 +15,16 @@ class USMap extends Component {
       animateOut: 200,
       label: {
         fill: '#fff',
+        fontFamily: 'sans-serif',
         fontWeight: 'bold',
-        fontSize: '14',
+        fontSize: '14px',
+        textAnchor: 'middle',
       },
     }, this.props.options);
+  }
+
+  handleClick(path) {
+    console.log(this);
   }
 
   buildStates() {
@@ -33,11 +38,12 @@ class USMap extends Component {
           dimensions = mapData[stateKey].pathWithLabel;
         }
 
-        const path = <USState
-          key={stateKey}
-          dimensions={dimensions}
-          state={stateKey}
-          fill={this.config.fill} />;
+        const path = (
+          <g className={`${stateKey} state`} onClick={this.handleClick.bind(mapData[stateKey])}>
+            <path d={dimensions} stroke={this.config.stroke} fill={this.config.fill} />
+            {this.config.labels && <text x={mapData[stateKey].abbr.posX} y={mapData[stateKey].abbr.posY} style={this.config.label}>{mapData[stateKey].abbr.text}</text>}
+          </g>
+        );
         paths.push(path);
       }
     }
@@ -61,16 +67,6 @@ class USMap extends Component {
     );
   }
 }
-
-// class App extends Component {
-//   render() {
-//     return (
-//       <div>
-//         <USMap width="100%" height="100%" />
-//       </div>
-//     );
-//   }
-// }
 
 export default (element, options) => render(<USMap options={options} />, element);
 
