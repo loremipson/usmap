@@ -1,18 +1,17 @@
 import { h, render, Component } from 'preact';
-import throttle from 'lodash/throttle';
+import _throttle from 'lodash/throttle';
 import mapData from './mapData';
 import assign from 'object-assign-deep';
 
-class USMap extends Component {
-
-  constructor(props) {
-    super(props);
-
-    this.config = assign({
-      fill: '#d3d3d3',
-      stroke: '#fff',
-      animateIn: 0,
-      animateOut: 200,
+const USMap = props => {
+  const config = assign({
+    style: {
+      path: {
+        fill: '#d3d3d3',
+        hoverFill: false,
+        stroke: '#fff',
+        strokeWidth: 1.5,
+      },
       label: {
         fill: '#fff',
         fontFamily: 'sans-serif',
@@ -20,28 +19,45 @@ class USMap extends Component {
         fontSize: '14px',
         textAnchor: 'middle',
       },
-    }, this.props.options);
-  }
+    },
+    animateIn: 0,
+    animateOut: 200,
+  }, props.options);
 
-  handleClick(path) {
-    console.log(this);
-  }
+  const determineStyle = item => {
 
-  buildStates() {
+    if (config.groups) {
+      for (const group in config.groups) {
+        if (config.groups[group].style && config.groups[group].states.indexOf(item.abbr.text) > -1) {
+          return 'styled';
+          return assign(config.style, config.groups[group].style);
+        }
+      }
+    }
+
+    return 'default';
+    return config.style;
+  };
+
+  const buildStates = () => {
     const paths = [];
 
     for (const stateKey in mapData) {
       if ({}.hasOwnProperty.call(mapData, stateKey)) {
         let dimensions = mapData[stateKey].path;
 
-        if (this.config.labels && {}.hasOwnProperty.call(mapData[stateKey], 'pathWithLabel')) {
+        const styles = determineStyle(mapData[stateKey]);
+
+        console.log(styles);
+
+        if (config.labels && {}.hasOwnProperty.call(mapData[stateKey], 'pathWithLabel')) {
           dimensions = mapData[stateKey].pathWithLabel;
         }
 
         const path = (
-          <g className={`${stateKey} state`} onClick={this.handleClick.bind(mapData[stateKey])}>
-            <path d={dimensions} stroke={this.config.stroke} fill={this.config.fill} />
-            {this.config.labels && <text x={mapData[stateKey].abbr.posX} y={mapData[stateKey].abbr.posY} style={this.config.label}>{mapData[stateKey].abbr.text}</text>}
+          <g className={`${stateKey} state`} onClick="" onMouseMove="">
+            <path d={dimensions} style={styles.path} />
+            {config.labels && <text x={mapData[stateKey].abbr.posX} y={mapData[stateKey].abbr.posY} style={styles.label}>{mapData[stateKey].abbr.text}</text>}
           </g>
         );
         paths.push(path);
@@ -49,24 +65,61 @@ class USMap extends Component {
     }
 
     return paths;
-  }
+  };
 
-  render() {
-    return (
-      <svg
-        className="usmap"
-        xmlns="https://www.w3.org/2000/svg"
-        width={this.props.width}
-        height={this.props.height}
-        viewBox="0 0 927 590">
-        <title>{this.props.title || 'US Map'}</title>
-        <g className="states">
-          {this.buildStates()}
-        </g>
-      </svg>
-    );
-  }
-}
+// class USMap extends Component {
+
+//   constructor(props) {
+//     super(props);
+
+//     this.config = assign({
+//       fill: '#d3d3d3',
+//       stroke: '#fff',
+//       strokeWidth: 1,
+//       animateIn: 0,
+//       animateOut: 200,
+//       label: {
+//         fill: '#fff',
+//         fontFamily: 'sans-serif',
+//         fontWeight: 'bold',
+//         fontSize: '14px',
+//         textAnchor: 'middle',
+//       },
+//     }, this.props.options);
+//   }
+
+//   determineStyle() {
+//     const defaults = {
+//       path: {
+//         fill: this.config.fill,
+//       },
+//       label: this.config.label,
+//     }
+//     console.log(this);
+//   }
+
+//   handleClick(path) {
+//     console.log(this);
+//   }
+
+//   handleMouseMove(path) {
+//     console.log(path);
+//   }
+
+  return (
+    <svg
+      className="usmap"
+      xmlns="https://www.w3.org/2000/svg"
+      width="100%"
+      height="100%"
+      viewBox="0 0 927 590">
+      <title>{config.title || 'US Map'}</title>
+      <g className="states">
+        {buildStates()}
+      </g>
+    </svg>
+  );
+};
 
 export default (element, options) => render(<USMap options={options} />, element);
 
