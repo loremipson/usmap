@@ -1,3 +1,80 @@
+import { h, render, Component } from 'preact';
+import throttle from 'lodash/throttle';
+import USState from './components/USState';
+import mapData from './mapData';
+import assign from 'object-assign-deep';
+
+class USMap extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.config = assign({
+      fill: '#d3d3d3',
+      stroke: '#fff',
+      animateIn: 0,
+      animateOut: 200,
+      label: {
+        fill: '#fff',
+        fontWeight: 'bold',
+        fontSize: '14',
+      },
+    }, this.props.options);
+  }
+
+  buildStates() {
+    const paths = [];
+
+    for (const stateKey in mapData) {
+      if ({}.hasOwnProperty.call(mapData, stateKey)) {
+        let dimensions = mapData[stateKey].path;
+
+        if (this.config.labels && {}.hasOwnProperty.call(mapData[stateKey], 'pathWithLabel')) {
+          dimensions = mapData[stateKey].pathWithLabel;
+        }
+
+        const path = <USState
+          key={stateKey}
+          dimensions={dimensions}
+          state={stateKey}
+          fill={this.config.fill} />;
+        paths.push(path);
+      }
+    }
+
+    return paths;
+  }
+
+  render() {
+    return (
+      <svg
+        className="usmap"
+        xmlns="https://www.w3.org/2000/svg"
+        width={this.props.width}
+        height={this.props.height}
+        viewBox="0 0 927 590">
+        <title>{this.props.title || 'US Map'}</title>
+        <g className="states">
+          {this.buildStates()}
+        </g>
+      </svg>
+    );
+  }
+}
+
+// class App extends Component {
+//   render() {
+//     return (
+//       <div>
+//         <USMap width="100%" height="100%" />
+//       </div>
+//     );
+//   }
+// }
+
+export default (element, options) => render(<USMap options={options} />, element);
+
+/*
 import Raphael from 'raphael';
 import mapData from './mapData';
 import assign from 'object-assign-deep';
@@ -103,4 +180,4 @@ export default (element, options) => {
     }
   }
 };
-
+*/
