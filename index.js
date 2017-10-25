@@ -1,83 +1,16 @@
-import { h, render, Component } from 'preact';
-import _throttle from 'lodash/throttle';
-import mapData from './mapData';
-import assign from 'object-assign-deep';
+import { h, render } from 'preact';
+import Map from './components/Map';
 
-const USMap = props => {
-  const config = assign({
-    style: {
-      path: {
-        fill: '#d3d3d3',
-        hoverFill: false,
-        stroke: '#fff',
-        strokeWidth: 1.5,
-      },
-      label: {
-        fill: '#fff',
-        fontFamily: 'sans-serif',
-        fontWeight: 'bold',
-        fontSize: '14px',
-        textAnchor: 'middle',
-      },
-    },
-    animateIn: 0,
-    animateOut: 200,
-  }, props.options);
-
-  const determineStyle = item => {
-
-    if (config.groups) {
-      for (const group in config.groups) {
-        if (config.groups[group].style && config.groups[group].states.indexOf(item.abbr.text) > -1) {
-          return 'styled';
-          return assign(config.style, config.groups[group].style);
-        }
-      }
-    }
-
-    return 'default';
-    return config.style;
-  };
-
-  const buildStates = () => {
-    const paths = [];
-
-    for (const stateKey in mapData) {
-      if ({}.hasOwnProperty.call(mapData, stateKey)) {
-        let dimensions = mapData[stateKey].path;
-
-        const styles = determineStyle(mapData[stateKey]);
-
-        console.log(styles);
-
-        if (config.labels && {}.hasOwnProperty.call(mapData[stateKey], 'pathWithLabel')) {
-          dimensions = mapData[stateKey].pathWithLabel;
-        }
-
-        const path = (
-          <g className={`${stateKey} state`} onClick="" onMouseMove="">
-            <path d={dimensions} style={styles.path} />
-            {config.labels && <text x={mapData[stateKey].abbr.posX} y={mapData[stateKey].abbr.posY} style={styles.label}>{mapData[stateKey].abbr.text}</text>}
-          </g>
-        );
-        paths.push(path);
-      }
-    }
-
-    return paths;
-  };
-
-// class USMap extends Component {
-
-//   constructor(props) {
-//     super(props);
-
-//     this.config = assign({
-//       fill: '#d3d3d3',
-//       stroke: '#fff',
-//       strokeWidth: 1,
-//       animateIn: 0,
-//       animateOut: 200,
+export default (element, options) => render(<Map options={options} />, element);
+// const USMap = props => {
+//   const config = assign({
+//     style: {
+//       path: {
+//         fill: '#d3d3d3',
+//         hoverFill: false,
+//         stroke: '#fff',
+//         strokeWidth: 1.5,
+//       },
 //       label: {
 //         fill: '#fff',
 //         fontFamily: 'sans-serif',
@@ -85,43 +18,59 @@ const USMap = props => {
 //         fontSize: '14px',
 //         textAnchor: 'middle',
 //       },
-//     }, this.props.options);
-//   }
+//     },
+//     animateIn: 0,
+//     animateOut: 200,
+//   }, props.options);
 
-//   determineStyle() {
-//     const defaults = {
-//       path: {
-//         fill: this.config.fill,
-//       },
-//       label: this.config.label,
+//   const determineStyle = obj => {
+
+//     obj.style = config.style;
+
+//     if (config.groups) {
+//       for (const key in config.groups) {
+//         if (config.groups[key].style && config.groups[key].states.indexOf(obj.abbr.text) > -1) {
+//           const styleConf = config.groups[key].style;
+
+//           // "Copies" the current default style to a new object.
+//           obj.style = assign({}, obj.style);
+
+//           // Now we can overwrite that object, since it's a separate instance.
+//           obj.style = assign(obj.style, config.groups[key].style);
+//         }
+//       }
 //     }
-//     console.log(this);
-//   }
 
-//   handleClick(path) {
-//     console.log(this);
-//   }
+//     return obj;
+//   };
 
-//   handleMouseMove(path) {
-//     console.log(path);
-//   }
+//   const buildStates = () => {
+//     const paths = [];
 
-  return (
-    <svg
-      className="usmap"
-      xmlns="https://www.w3.org/2000/svg"
-      width="100%"
-      height="100%"
-      viewBox="0 0 927 590">
-      <title>{config.title || 'US Map'}</title>
-      <g className="states">
-        {buildStates()}
-      </g>
-    </svg>
-  );
-};
+//     for (const stateKey in mapData) {
+//       if ({}.hasOwnProperty.call(mapData, stateKey)) {
+//         let dimensions = mapData[stateKey].path;
 
-export default (element, options) => render(<USMap options={options} />, element);
+//         const stateObj = determineStyle(mapData[stateKey]);
+
+//         // Draw out the label spots for states that are too small for a label
+//         if (config.labels && {}.hasOwnProperty.call(stateObj, 'pathWithLabel')) {
+//           dimensions = stateObj.pathWithLabel;
+//         }
+
+//         const path = (
+//           <g className={`${stateKey} state`} onClick="" onMouseMove="">
+//             <path d={dimensions} style={stateObj.style.path} />
+//             {config.labels && <text x={stateObj.abbr.posX} y={stateObj.abbr.posY} style={stateObj.style.label}>{stateObj.abbr.text}</text>}
+//           </g>
+//         );
+//         paths.push(path);
+//       }
+//     }
+
+//     return paths;
+//   };
+
 
 /*
 import Raphael from 'raphael';

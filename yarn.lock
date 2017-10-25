@@ -637,6 +637,10 @@ has-ansi@^2.0.0:
   dependencies:
     ansi-regex "^2.0.0"
 
+hooka-tools@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/hooka-tools/-/hooka-tools-3.0.1.tgz#a5258b26c4d4dcfde5dc5d5491850312fdb8afc5"
+
 iconv-lite@~0.4.13:
   version "0.4.19"
   resolved "https://npm.clearlink.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
