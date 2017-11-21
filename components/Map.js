@@ -8,6 +8,17 @@ export default class Map extends Component {
   constructor(props) {
     super(props);
 
+    this.mapData = mapData;
+
+    if (props.objs.length) {
+      props.objs.map((obj) => {
+        if (typeof obj !== 'object') {
+          return false;
+        }
+        this.mapData = assign(this.mapData, obj);
+      });
+    }
+
     this.config = assign({
       title: 'US Map',
       linkTemplate: false,
