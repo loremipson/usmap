@@ -1,7 +1,8 @@
 import { h, render } from 'preact';
 import Map from './components/Map';
 
-export default (element, options) => render(<Map options={options} />, element);
+export default (element, options, ...objs) => render(<Map options={options} objs={objs} />, element);
+
 // const USMap = props => {
 //   const config = assign({
 //     style: {
