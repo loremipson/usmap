@@ -1,8 +1,14 @@
 import { h, render, Component } from 'preact';
+import { connect } from 'preact-redux';
+import { bindActions } from '../util';
+import reduce from '../reducers';
+import * as actions from '../actions';
 import assign from 'object-assign-deep';
 import State from './State';
+
 import mapData from '../mapData';
 
+@connect(reduce, bindActions(actions))
 export default class Map extends Component {
   
   constructor(props) {

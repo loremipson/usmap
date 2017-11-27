@@ -1,7 +1,16 @@
 import { h, render } from 'preact';
+import { Provider } from 'preact-redux';
+import store from './store';
 import Map from './components/Map';
 
-export default (element, options, ...objs) => render(<Map options={options} objs={objs} />, element);
+require('preact/devtools');
+
+export default (element, options, ...objs) => render((
+  <Provider store={store}>
+    <Map options={options} objs={objs} />
+  </Provider>
+), element);
+
 
 // const USMap = props => {
 //   const config = assign({
