@@ -49,6 +49,10 @@ export default class Map extends Component {
     this.buildStateObject = this.buildStateObject.bind(this);
   }
 
+  shouldComponentUpdate(newProps, newState) {
+    return (this.state.tooltipPosition !== newState.tooltipPosition);
+  }
+
   buildStateObject(obj) {
 
     obj.style = this.config.style;
