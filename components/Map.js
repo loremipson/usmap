@@ -8,6 +8,11 @@ export default class Map extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      activeTooltip: false,
+      tooltipPosition: false,
+    };
+
     this.mapData = mapData;
 
     if (props.objs.length) {
@@ -72,6 +77,20 @@ export default class Map extends Component {
     return obj;
   }
 
+  setTooltip(template, position) {
+    this.setState({
+      tooltipPosition: position,
+      activeTooltip: template,
+    });
+  }
+
+  clearTooltip() {
+    this.setState({
+      tooltipPosition: false,
+      activeTooltip: false,
+    });
+  }
+
   buildStates() {
     const paths = [];
 
@@ -88,7 +107,13 @@ export default class Map extends Component {
         }
 
         const path = (
-          <State stateObj={stateObj} state={`${stateKey}`} dimensions={dimensions} labels={labels} />
+          <State stateObj={stateObj}
+            state={`${stateKey}`}
+            dimensions={dimensions}
+            labels={labels}
+            setTooltip={this.setTooltip.bind(this)}
+            clearTooltip={this.clearTooltip.bind(this)}
+           />
         );
         paths.push(path);
       }
@@ -99,17 +124,26 @@ export default class Map extends Component {
 
   render() {
     return (
-      <svg
-        className="usmap"
-        xmlns="https://www.w3.org/2000/svg"
-        width="100%"
-        height="100%"
-        viewBox="0 0 927 590">
-        <title>{this.config.title}</title>
-        <g className="states">
-          {this.buildStates()}
-        </g>
-      </svg>
+      <div className="usmap__container">
+        <svg
+          className="usmap"
+          xmlns="https://www.w3.org/2000/svg"
+          width="100%"
+          height="100%"
+          viewBox="0 0 927 590">
+          <title>{this.config.title}</title>
+          <g className="states">
+            {this.buildStates()}
+          </g>
+        </svg>
+        {this.state.activeTooltip &&
+          <div
+            className="usmap__tooltip__container"
+            style={this.state.tooltipPosition}
+            dangerouslySetInnerHTML={{ __html: this.state.activeTooltip}}
+          />
+        }
+      </div>
     );
   }
 };

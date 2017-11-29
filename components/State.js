@@ -1,5 +1,4 @@
 import { h, render, Component } from 'preact';
-import throttle from 'lodash/throttle';
 
 class State extends Component {
   constructor(props) {
@@ -9,7 +8,7 @@ class State extends Component {
       hovering: false,
     };
 
-    this.handleMouseMove = throttle(this.handleMouseMove.bind(this), 500);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleClick = this.handleClick.bind(props.stateObj);
@@ -17,10 +16,15 @@ class State extends Component {
 
   handleMouseMove(e) {
     if (!this.props.stateObj.tooltip) {
+      console.log('Still here');
       return false;
     }
-    console.log(`x: ${e.x}, y: ${e.y}`);
-    console.log(this.state);
+    const position = {
+      position: 'absolute',
+      top: `${e.y}px`,
+      left: `${(e.x + 20)}px`,
+    }
+    this.props.setTooltip(this.props.stateObj.tooltip, position);
   }
 
   handleMouseEnter() {
@@ -33,6 +37,7 @@ class State extends Component {
     this.setState({
       hovering: false,
     });
+    this.props.clearTooltip();
   }
 
   handleClick() {
@@ -53,7 +58,7 @@ class State extends Component {
   }
 
   render(props) {
-    const { style, abbr } = props.stateObj;
+    const { style, abbr, tooltip } = props.stateObj;
     const { hoverFill, stroke, strokeWidth } = style.path; 
     let { fill } = style.path;
 
@@ -64,7 +69,7 @@ class State extends Component {
     return (
       <g className={`state state__${props.state}`}
         onClick={this.handleClick}
-        onMouseMove={this.handleMouseMove}
+        onMouseMove={tooltip && this.handleMouseMove}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
