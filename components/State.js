@@ -1,4 +1,5 @@
 import { h, render, Component } from 'preact';
+import throttle from 'lodash/throttle';
 
 class State extends Component {
   constructor(props) {
@@ -8,22 +9,18 @@ class State extends Component {
       hovering: false,
     };
 
-    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseMove = throttle(this.handleMouseMove.bind(this), 20);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleClick = this.handleClick.bind(props.stateObj);
   }
 
   handleMouseMove(e) {
-    if (!this.props.stateObj.tooltip) {
-      console.log('Still here');
-      return false;
-    }
     const position = {
       position: 'absolute',
       top: `${e.y}px`,
       left: `${(e.x + 20)}px`,
-    }
+    };
     this.props.setTooltip(this.props.stateObj.tooltip, position);
   }
 
