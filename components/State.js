@@ -1,5 +1,4 @@
 import { h, render, Component } from 'preact';
-import throttle from 'lodash/throttle';
 
 class State extends Component {
   constructor(props) {
@@ -9,7 +8,7 @@ class State extends Component {
       hovering: false,
     };
 
-    this.handleMouseMove = throttle(this.handleMouseMove.bind(this), 20);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleClick = this.handleClick.bind(props.stateObj);
