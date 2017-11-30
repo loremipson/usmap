@@ -55,22 +55,25 @@ class State extends Component {
 
   render(props) {
     const { style, abbr, tooltip } = props.stateObj;
-    const { hoverFill, stroke, strokeWidth } = style.path; 
-    let { fill } = style.path;
+    const { fill, hoverFill, stroke, strokeWidth } = style.path; 
 
-    if (this.state.hovering && hoverFill) {
-      fill = hoverFill;
+    const hoveringStyle = {
+      fill: hoverFill,
+      stroke,
+      strokeWidth,
+      opacity: (this.state.hovering ? 1 : 0),
     }
 
     return (
-      <g className={`state state__${props.state}`}
+      <g className={`usmap__state usmap__state--${props.state}`}
         onClick={this.handleClick}
         onMouseMove={tooltip && this.handleMouseMove}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
-        <g className="paths">
+        <g className="usmap__state__paths">
           <path d={props.dimensions} style={{ fill, stroke, strokeWidth }} />
+          {hoverFill && <path d={props.dimensions} style={hoveringStyle} />}
         </g>
         {props.labels && <text x={abbr.posX}
           y={props.stateObj.abbr.posY}
