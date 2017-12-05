@@ -3,48 +3,55 @@
 An interactive US state map that's simple to use.
 
 ```shell
+#yarn
 yarn add usmap
+
+# npm
+npm i -D usmap
 ```
+
+Basic Usage
 
 ```javascript
 import map from 'usmap';
 
 const mapEl = document.querySelector('.your-element');
-mapEl(map);
+
+map(mapEl);
+```
+
+You can pass options as a second parameter:
+
+```javascript
+const mapEl = document.querySelector('.your-element');
+
+const options = {
+  // Available options outlined below
+}
+
+map(mapEl, options)
 ```
 
 ## Options
 
-By default, the map is pretty plain. You can pass an object of options as the second parameter:
-
-```javascript
-mapEl(map, {
-  // options
-});
-```
-
-This map utilizes Raphael, so all of [Raphael's `attr` parameters](http://dmitrybaranovskiy.github.io/raphael/reference.html#Element.attr) are available. By default, we only set the `fill` and `stroke` colors.
-
-| **Option**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | **Type** | **Default Value** | **Description** |
+| **Option** | **Type** | **Default**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | **Description** |
 |:-----------|----------|-------------------|-----------------|
-| **`'fill'`** | String | `'#d3d3d3'` | Background fill color of each state |
-| **`'hover-fill'`** | String | | Background fill color of each state when hovering |
-| **`'stroke'`** | String | `'#fff'` | The stroke colors the lines separating each state |
-| **`'animate-in'`** | Int | `0` | The number, in milliseconds, that your fill comes in when hovering |
-| **`'animate-out'`** | Int | `200` | The number, in milliseconds, that your fill returns to normal when hovering |
-| **`'link-template'`** | String | | This creates a click event that takes the user to the format. See further documentation below |
-| **`'labels'`** | Bool | `false` | If set to true, shows the State abbreviation and has easier access to some of the smaller states |
-| **`'label'`** | Object | | The style of your label. You can set fill, font-weight, font-size, etc. |
-| **`'groups'`** | Object | | Allows you to group specific states together and overwrite the above options for them |
+| **`title`** | String | `'US Map'` | This gets applied to the generated `<svg>` title. |
+| **`labels`** | Bool | `false` | If set to true, shows the State abbreviation and has easier access to some of the smaller states |
+| **[`linkTemplate`](#linkTemplate)** | String | [Reference](#linkTemplate) | This creates a click event that takes the user to the format. See further documentation below |
+| **[`style`](#style)** | Object | [Reference](#style) | Styling for the default `path` and `text`. |
+| **[`groups`](#groups)** | Object | [Reference](#groups) | Allows you to group specific states together and overwrite the above options for them |
 
-### `link-template`
+---
+
+### `linkTemplate`
 
 If this option is set, a click event is placed on the state. You can pass in either `{name}` or `{abbr}` to this template and it will render out the link accordingly.
 
 ```javascript
 {
   // ...
-  'link-template': '/some/url/{name}',
+  linkTemplate: '/some/url/{name}',
 }
 ```
 
@@ -53,42 +60,59 @@ This will render links out at: `/some/url/new-york`, `/some/url/washington`, etc
 ```javascript
 {
   // ...
-  'link-template': '/some/url/{abbr}',
+  linkTemplate: '/some/url/{abbr}',
 }
 ```
 
 This will render links out as `/some/url/ny`, `/some/url/wa`, etc.
 
-### `label`
+---
 
-This object is for the appearance of the text/state abbreviations that show up if `labels` is set to `true`.
+### `style`
 
-Because this package uses Raphael, you have access to [all of `.attr()`](https://dmitrybaranovskiy.github.io/raphael/reference.html#Element.attr). You can set fill, stroke, font-size, etc.
+Your style object can contain style overwrites for both the svg `path`, and the `label` that is in place if you have `labels: true` in your options.
+
+Below is an example of this object, with all of the available keys and their default values.
 
 ```javascript
 {
-  // ... 
-  'label': {
-    'fill': '#fff',
-    'font-weight': 'bold',
+  // ...
+  style: {
+    path: {
+      fill: '#d3d3d3',
+      hoverFill: false,
+      stroke: '#fff',
+      strokeWidth: 1.5,
+    },
+    label: {
+      fill: '#fff',
+      fontFamily: 'sans-serif',
+      fontWeight: 'bold',
+      fontSize: '14px',
+      textAnchor: 'middle',
+    },
   },
 }
 ```
 
 ### `groups`
 
-Groups allow you to .. "group" specific states together. Groups can have their own fill, hover-fill, label styles, etc.
+Groups allow you to .. "group" specific states together. Groups can have their own `style`, `linkTemplate`, etc.
 
 Groups _require_ an array of States (capitalized abbreviations). Some examples:
 
 ```javascript
 {
   // ...
-  'groups': {
-    'group-name': {
-      'fill': '#f06',
-      'hover-fill': '#905',
-      'states': ['NY', 'WA'],
+  groups: {
+    groupName: {
+      states: ['NY', 'WA'],
+      style: {
+        path: {
+          fill: 'dodgerblue',
+          hoverFill: 'rebeccapurple',
+        },
+      },
     },
   },
 }
@@ -97,18 +121,81 @@ Groups _require_ an array of States (capitalized abbreviations). Some examples:
 ```javascript
 {
   // ...
-  'groups': {
-    'four-corners': {
-      'states': ['CO', 'UT', 'AZ', 'NM'],
-      'link-template': '/custom/path/{abbr}',
+  groups: {
+    fourCorners: {
+      states: ['CO', 'UT', 'AZ', 'NM'],
+      linkTemplate: '/custom/path/{abbr}',
     },
   },
 }
 ```
 
-## Known Issues
+---
 
-### IE11 Scaling Issue
+## Additional Abilities
+
+### `tooltips`
+
+You can pass an object to create "tooltip" data. This creates a `<div>` that contains any markup you pass through, that follows the cursor when a state is hovered on.
+
+_**Important:** This can be intensive on the clients cpu, and is not recommended in most use-cases. If there is not useful information to display in your tooltip, then please push back on using this feature._
+
+Similar to the [`linkTemplate`](#linkTemplate), you can pass in `{name}` or `{abbr}` and they will render out according to the State.
+
+Your tooltip can have whatever markup or classes you want. It's a good idea to create a "template" to avoid repeating your code.
+
+```javascript
+// Create a template for your tooltips..
+const createTip = contents => `
+  <div class="usmap__tooltip">
+    <h3>{name}</h3>
+    ${content}
+  </div>
+`;
+
+// Create your tooltip object
+const tooltips = {
+  utah: {
+    tooltip: createTip('30% available in {abbr}'),
+  },
+  colorado: {
+    tooltip: createTip('30% available in {abbr}'),
+  },
+  // etc...
+}
+
+// Pass your tooltip object in to the map function
+map(mapEl, options, tooltips);
+```
+
+Because your tooltip can be unique to your project, there are no default styles being applied. You can simply use your projects sass/css to target and style the tip to your needs.
+
+---
+
+### Animating your `hoverFill`
+
+With version `2.0.0`, you no longer have `animateIn` and `animateOut` available to the options object.
+
+Also, you can't actually "animate" the `fill` property with css. Because of this, the map actually applies a second `path` that contains the hover fill and uses `opacity` to show and hide them. You can apply `transition` to the opacity to create hover effects.
+
+The example below will animate in, but not out:
+
+```scss
+.usmap__state__paths {
+  path {
+    transition: opacity .3s ease-out;
+
+    &:hover {
+      transition: none;
+    }
+  }
+}
+```
+---
+
+### Known Issues
+
+#### IE11 Scaling Issue
 
 IE11 does not scale the map. This can be resolved with stylesheets using positioning on both the parent map element and the svg that gets generated.
 
