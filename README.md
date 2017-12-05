@@ -38,7 +38,7 @@ map(mapEl, options)
 |:-----------|----------|-------------------|-----------------|
 | **`title`** | String | `'US Map'` | This gets applied to the generated `<svg>` title. |
 | **`labels`** | Bool | `false` | If set to true, shows the State abbreviation and has easier access to some of the smaller states |
-| **[`linkTemplate`](#linkTemplate)** | String | [Reference](#linkTemplate) | This creates a click event that takes the user to the format. See further documentation below |
+| **[`linkTemplate`](#linktemplate)** | String | [Reference](#linktemplate) | This creates a click event that takes the user to the format. See further documentation below |
 | **[`style`](#style)** | Object | [Reference](#style) | Styling for the default `path` and `text`. |
 | **[`groups`](#groups)** | Object | [Reference](#groups) | Allows you to group specific states together and overwrite the above options for them |
 
@@ -140,7 +140,7 @@ You can pass an object to create "tooltip" data. This creates a `<div>` that con
 
 _**Important:** This can be intensive on the clients cpu, and is not recommended in most use-cases. If there is not useful information to display in your tooltip, then please push back on using this feature._
 
-Similar to the [`linkTemplate`](#linkTemplate), you can pass in `{name}` or `{abbr}` and they will render out according to the State.
+Similar to the [`linkTemplate`](#linktemplate), you can pass in `{name}` or `{abbr}` and they will render out according to the State.
 
 Your tooltip can have whatever markup or classes you want. It's a good idea to create a "template" to avoid repeating your code.
 
