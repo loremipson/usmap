@@ -26,6 +26,7 @@ export default class Map extends Component {
 
     this.config = assign({
       title: 'US Map',
+      labels: false,
       linkTemplate: false,
       style: {
         path: {
@@ -33,8 +34,6 @@ export default class Map extends Component {
           hoverFill: false,
           stroke: '#fff',
           strokeWidth: 1.5,
-          animateIn: 0,
-          animateOut: 200,
         },
         label: {
           fill: '#fff',
