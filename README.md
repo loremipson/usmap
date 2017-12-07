@@ -32,11 +32,11 @@ const options = {
 map(mapEl, options)
 ```
 
-## Options
+## Available Options
 
 | **Option** | **Type** | **Default**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | **Description** |
 |:-----------|----------|-------------------|-----------------|
-| **`title`** | String | `'US Map'` | This gets applied to the generated `<svg>` title. |
+| **`title`** | String | `'US Map'` | This simply gets applied to the generated `<svg>` title. |
 | **`labels`** | Bool | `false` | If set to true, shows the State abbreviation and has easier access to some of the smaller states |
 | **[`linkTemplate`](#linktemplate)** | String | [Reference](#linktemplate) | This creates a click event that takes the user to the format. See further documentation below |
 | **[`style`](#style)** | Object | [Reference](#style) | Styling for the default `path` and `text`. |
@@ -46,25 +46,27 @@ map(mapEl, options)
 
 ### `linkTemplate`
 
-If this option is set, a click event is placed on the state. You can pass in either `{name}` or `{abbr}` to this template and it will render out the link accordingly.
+If this option is set, a click event is placed on the state. You can pass in either `{name}` or `{abbr}` as a `String` to this template and it will render out the link accordingly.
 
 ```javascript
+/**
+ * This will render links out as:
+ * `/some/url/new-york`, `/some/url/washington`, etc.
+ */
 {
   // ...
   linkTemplate: '/some/url/{name}',
 }
-```
 
-This will render links out at: `/some/url/new-york`, `/some/url/washington`, etc.
-
-```javascript
+/**
+ * This will render links out as:
+ * `/another-url/ny`, `/another-url/wa`, etc.
+ */
 {
   // ...
-  linkTemplate: '/some/url/{abbr}',
+  linkTemplate: '/another-url/{abbr}',
 }
 ```
-
-This will render links out as `/some/url/ny`, `/some/url/wa`, etc.
 
 ---
 
