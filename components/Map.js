@@ -1,5 +1,6 @@
 import { h, render, Component } from 'preact';
-import assign from 'object-assign-deep';
+// import assign from 'object-assign-deep';
+import assign from 'lodash/merge';
 import State from './State';
 import mapData from '../mapData';
 
